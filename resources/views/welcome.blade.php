@@ -1,6 +1,15 @@
 @extends('layouts.public')
 
-@section('title', 'Aetherian Cargo | International Freight')
+@section('title', 'Aetherian Cargo | Global Cargo & Shipment Tracking')
+
+@section('head')
+    <meta name="description" content="Aetherian Cargo provides reliable cargo shipping and shipment tracking services. Track your shipment, view delivery updates, and get important information about your cargo.">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Aetherian Cargo | Global Cargo & Shipment Tracking">
+    <meta property="og:description" content="Aetherian Cargo provides reliable cargo shipping and shipment tracking services. Track your shipment, view delivery updates, and get important information about your cargo.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aetheriancargo.com/">
+@endsection
 
 @section('content')
     {{-- Hero --}}
