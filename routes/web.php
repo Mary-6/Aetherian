@@ -35,6 +35,8 @@ Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/cookies', [PageController::class, 'cookies'])->name('cookies');
 
+Route::redirect('/admin/login', '/login');
+
 Route::get('/chat/messages', [ChatController::class, 'messages'])->name('chat.messages');
 Route::post('/chat/messages', [ChatController::class, 'store'])->name('chat.store');
 
