@@ -228,7 +228,7 @@
                         <img src="{{ asset($project['img']) }}" alt="{{ $project['title'] }}">
                         <div class="project-overlay"></div>
                         <div class="project-caption">
-                            <p class="text-sm font-semibold text-slate-500">Aetherian</p>
+                            <p class="text-sm font-semibold text-slate-500">Aetherian Cargo</p>
                             <h3 class="text-xl font-bold text-slate-900">{{ $project['title'] }}</h3>
                         </div>
                     </div>
