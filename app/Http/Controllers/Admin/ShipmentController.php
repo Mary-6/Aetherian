@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\Driver;
+use App\Models\Setting;
 use App\Models\Shipment;
 use App\Models\ShipmentEvent;
 use Illuminate\Http\Request;
@@ -136,6 +137,21 @@ class ShipmentController extends Controller
         }
 
         return redirect()->route('admin.shipments.index')->with('success', 'Shipment updated.');
+    }
+
+    public function invoice(Shipment $shipment)
+    {
+        $shipment->load('events', 'branch', 'driver', 'creator');
+
+        $company = [
+            'name' => config('app.name'),
+            'logo' => asset('logo.png'),
+            'email' => Setting::get('company_email', config('mail.from.address', 'support@aetheriancargo.com')),
+            'phone' => Setting::get('company_phone', '1-800-AETHER'),
+            'address' => Setting::get('company_address', 'Aetherian Cargo HQ'),
+        ];
+
+        return view('admin.shipments.invoice', compact('shipment', 'company'));
     }
 
     public function destroy(Shipment $shipment)

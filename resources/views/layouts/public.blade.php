@@ -16,8 +16,7 @@
             <div class="flex items-center justify-between h-20">
                 <a href="{{ url('/') }}" class="flex items-center gap-2 font-bold text-xl shrink-0">
                     <img src="{{ asset('logo.png') }}" alt="{{ config('app.name') }}" class="w-8 h-8 rounded">
-                    <span class="hidden sm:inline">{{ config('app.name') }}</span>
-                    <span class="sm:hidden">Aetherian</span>
+                    <span class="text-base sm:text-lg font-bold truncate max-w-[140px] sm:max-w-none">{{ config('app.name') }}</span>
                 </a>
 
                 <div class="hidden lg:flex items-center justify-center flex-1 gap-8">
@@ -76,7 +75,6 @@
                 <a href="{{ route('services') }}" class="block text-slate-300 hover:text-white">Services</a>
                 <a href="{{ route('contact') }}" class="block text-slate-300 hover:text-white">Contact</a>
                 <a href="{{ route('faq') }}" class="block text-slate-300 hover:text-white">FAQ</a>
-                <a href="{{ route('support') }}" class="block text-slate-300 hover:text-white">Support</a>
                 <a href="{{ route('testimonials') }}" class="block text-slate-300 hover:text-white">Testimonials</a>
                 <a href="{{ route('track') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-accent-500 text-navy text-sm font-bold rounded-full">
                     Track shipment <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>

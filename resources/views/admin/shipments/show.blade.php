@@ -10,7 +10,10 @@
                 <h2 class="text-2xl font-bold">{{ $shipment->tracking_number }}</h2>
                 <div class="mt-2"><span class="px-3 py-1 rounded bg-blue-100 text-blue-800 text-sm font-bold">{{ $shipment->status }}</span></div>
             </div>
-            <a href="{{ route('admin.shipments.edit', $shipment) }}" class="bg-blue-900 text-white px-4 py-2 rounded hover:bg-blue-800">Edit</a>
+            <div class="space-x-2">
+                <a href="{{ route('admin.shipments.edit', $shipment) }}" class="bg-blue-900 text-white px-4 py-2 rounded hover:bg-blue-800 inline-block">Edit</a>
+                <a href="{{ route('admin.shipments.invoice', $shipment) }}" target="_blank" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-600 inline-block">Invoice</a>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 text-sm">

@@ -41,6 +41,7 @@ Route::post('/chat/messages', [ChatController::class, 'store'])->name('chat.stor
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('shipments', ShipmentController::class);
+    Route::get('shipments/{shipment}/invoice', [ShipmentController::class, 'invoice'])->name('shipments.invoice');
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('branches', BranchController::class);

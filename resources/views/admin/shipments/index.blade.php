@@ -31,6 +31,7 @@
                         <td class="px-6 py-3 space-x-2">
                             <a href="{{ route('admin.shipments.show', $shipment) }}" class="text-blue-600 hover:underline">View</a>
                             <a href="{{ route('admin.shipments.edit', $shipment) }}" class="text-blue-600 hover:underline">Edit</a>
+                            <a href="{{ route('admin.shipments.invoice', $shipment) }}" target="_blank" class="text-green-600 hover:underline">Invoice</a>
                             <form action="{{ route('admin.shipments.destroy', $shipment) }}" method="POST" class="inline" onsubmit="return confirm('Delete?')">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="text-red-600 hover:underline">Delete</button>
