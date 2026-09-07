@@ -14,7 +14,7 @@
     <div class="min-h-screen flex">
         <aside class="w-64 bg-navy text-white flex-shrink-0">
             <a href="{{ route('home') }}" class="p-4 flex items-center gap-3 font-bold text-lg">
-                <img src="{{ url('logo.png') }}" alt="Aetherian Cargo" class="w-8 h-8 rounded">
+                <img src="{{ asset('logo.png') }}" alt="Aetherian Cargo" class="w-8 h-8 rounded">
                 Aetherian Cargo
             </a>
             <nav class="space-y-1 px-2">

@@ -17,7 +17,7 @@
     <body class="font-sans text-slate-900 antialiased bg-[#F5F5F5]">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
             <div class="flex items-center gap-3 font-bold text-2xl text-navy">
-                <img src="{{ url('logo.png') }}" alt="Aetherian Cargo" class="w-12 h-12 rounded">
+                <img src="{{ asset('logo.png') }}" alt="Aetherian Cargo" class="w-12 h-12 rounded">
                 <span>Aetherian Cargo</span>
             </div>
 

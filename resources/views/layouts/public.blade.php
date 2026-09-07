@@ -15,7 +15,7 @@
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <a href="{{ url('/') }}" class="flex items-center gap-2 font-bold text-xl shrink-0">
-                    <img src="{{ url('logo.png') }}" alt="{{ config('app.name') }}" class="w-8 h-8 rounded">
+                    <img src="{{ asset('logo.png') }}" alt="{{ config('app.name') }}" class="w-8 h-8 rounded">
                     <span class="text-base sm:text-lg font-bold truncate max-w-[140px] sm:max-w-none">{{ config('app.name') }}</span>
                 </a>
 
