@@ -68,7 +68,7 @@
                             </div>
 
                             <div class="flex flex-col items-center border-b border-slate-200 pb-6 mb-6">
-                                <img src="{{ asset('logo.png') }}" alt="Aetherian Cargo" class="w-32 h-32 object-contain mb-4">
+                                <img src="{{ asset('brand-logo.png') }}" alt="Aetherian Cargo" class="w-32 h-32 object-contain mb-4">
                                 <h2 class="text-2xl font-bold text-brand-600 text-center">Aetherian Cargo</h2>
                                 <p class="text-sm text-slate-500 tracking-wider text-center uppercase">International Freight</p>
                                 <svg id="barcode" class="mt-6 w-full max-w-xs"></svg>
