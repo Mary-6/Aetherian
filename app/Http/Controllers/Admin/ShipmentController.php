@@ -145,7 +145,7 @@ class ShipmentController extends Controller
 
         $company = [
             'name' => config('app.name'),
-            'logo' => asset('logo.png'),
+            'logo' => url('logo.png'),
             'email' => Setting::get('company_email', config('mail.from.address', 'support@aetheriancargo.com')),
             'phone' => Setting::get('company_phone', '1-800-AETHER'),
             'address' => Setting::get('company_address', 'Aetherian Cargo HQ'),

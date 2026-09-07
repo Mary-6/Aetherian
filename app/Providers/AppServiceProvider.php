@@ -23,8 +23,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $rootUrl = config('app.url');
-        $isLocalDefault = in_array($rootUrl, ['http://localhost', 'http://127.0.0.1'], true);
-        if ($rootUrl && parse_url($rootUrl, PHP_URL_HOST) && ! $isLocalDefault) {
+        $host = $rootUrl ? parse_url($rootUrl, PHP_URL_HOST) : null;
+        $isLocalDefault = ! $host || in_array($host, ['localhost', '127.0.0.1'], true);
+
+        if (! $isLocalDefault) {
             URL::forceRootUrl($rootUrl);
         }
 
