@@ -13,8 +13,8 @@
 
 @section('content')
     {{-- Hero --}}
-    <section class="relative min-h-[700px] flex items-center overflow-hidden">
-        <img src="{{ asset('images/hero.jpg') }}" alt="Global logistics hub" class="absolute inset-0 w-full h-full object-cover">
+    <section class="relative min-h-[480px] sm:min-h-[580px] lg:min-h-[700px] flex items-center overflow-hidden">
+        <img src="{{ asset('images/hero.jpg') }}" alt="Global logistics hub" class="absolute inset-0 w-full h-full object-cover object-center">
         <div class="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/70 to-transparent"></div>
 
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
@@ -73,7 +73,7 @@
 
                 <div class="relative">
                     <div class="rounded-[20px] overflow-hidden shadow-2xl">
-                        <img src="{{ asset('images/warehouse.jpg') }}" alt="Warehouse operations" class="w-full h-auto object-cover">
+                        <img src="{{ asset('images/warehouse.jpg') }}" alt="Warehouse operations" class="w-full max-h-[360px] sm:max-h-[480px] lg:max-h-[540px] object-cover" loading="lazy">
                     </div>
                     <div class="absolute -bottom-6 -left-6 bg-brand-600 text-white p-6 rounded-2xl shadow-xl hidden lg:block">
                         <div class="flex items-center gap-4">
@@ -97,7 +97,7 @@
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <div class="relative">
                     <div class="rounded-[20px] overflow-hidden shadow-xl">
-                        <img src="{{ asset('images/truck.jpg') }}" alt="Truck on the road" class="w-full h-auto object-cover">
+                        <img src="{{ asset('images/truck.jpg') }}" alt="Truck on the road" class="w-full max-h-[360px] sm:max-h-[480px] lg:max-h-[540px] object-cover" loading="lazy">
                     </div>
                     <div class="absolute -bottom-4 -right-4 bg-accent-500 text-navy py-4 px-8 rounded-2xl font-bold text-xl hidden lg:block">
                         Since 2017
@@ -234,7 +234,7 @@
                 @endphp
                 @foreach ($projects as $project)
                     <div class="project-card group cursor-pointer">
-                        <img src="{{ asset($project['img']) }}" alt="{{ $project['title'] }}">
+                        <img src="{{ asset($project['img']) }}" alt="{{ $project['title'] }}" class="w-full h-52 sm:h-64 lg:h-80 object-cover" loading="lazy">
                         <div class="project-overlay"></div>
                         <div class="project-caption">
                             <p class="text-sm font-semibold text-slate-500">Aetherian Cargo</p>

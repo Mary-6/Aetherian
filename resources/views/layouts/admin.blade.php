@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin') - Aetherian Cargo</title>
+    <script>window.vapidPublicKey = '{{ config('webpush.vapid.public_key') }}';</script>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -19,17 +20,34 @@
             </a>
             <nav class="space-y-1 px-2">
                 <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded hover:bg-white/10">Dashboard</a>
-                <a href="{{ route('admin.shipments.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Shipments</a>
-                <a href="{{ route('admin.users.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Users</a>
-                <a href="{{ route('admin.roles.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Roles</a>
-                <a href="{{ route('admin.branches.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Branches</a>
-                <a href="{{ route('admin.warehouses.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Warehouses</a>
+
+                <div class="px-3 py-2 text-xs uppercase text-slate-400 font-semibold tracking-wider mt-3">Shipping</div>
+                <a href="{{ route('admin.shipments.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">List Shipments</a>
+                <a href="{{ route('admin.shipments.create') }}" class="block px-3 py-2 rounded hover:bg-white/10">Create Shipment</a>
+                <a href="{{ route('admin.pickups.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Pickups</a>
+                <a href="{{ route('admin.consolidated.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Consolidated</a>
+                <a href="{{ route('admin.locker.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Locker Packages</a>
+                <a href="{{ route('admin.transactions.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Transactions</a>
+                <a href="{{ route('admin.reports.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">General Reports</a>
+
+                <div class="px-3 py-2 text-xs uppercase text-slate-400 font-semibold tracking-wider mt-3">Users</div>
+                <a href="{{ route('admin.customers.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Client List</a>
+                <a href="{{ route('admin.recipients.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">My Recipients</a>
                 <a href="{{ route('admin.drivers.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Drivers</a>
                 <a href="{{ route('admin.vehicles.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Vehicles</a>
+                <a href="{{ route('admin.users.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">All Users</a>
+                <a href="{{ route('admin.roles.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Roles & Permissions</a>
+
+                <div class="px-3 py-2 text-xs uppercase text-slate-400 font-semibold tracking-wider mt-3">Operations</div>
+                <a href="{{ route('admin.branches.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Branches</a>
+                <a href="{{ route('admin.warehouses.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Warehouses</a>
                 <a href="{{ route('admin.support-tickets.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Support Tickets</a>
                 <a href="{{ route('admin.contact-messages.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Contact Messages</a>
                 <a href="{{ route('admin.chat.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Live Chat</a>
-                <a href="{{ route('admin.settings.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">Settings</a>
+
+                <div class="px-3 py-2 text-xs uppercase text-slate-400 font-semibold tracking-wider mt-3">Settings</div>
+                <a href="{{ route('admin.settings.index') }}" class="block px-3 py-2 rounded hover:bg-white/10">System Settings</a>
+                <a href="{{ route('admin.profile.edit') }}" class="block px-3 py-2 rounded hover:bg-white/10">Account Profile</a>
             </nav>
         </aside>
 
@@ -65,7 +83,58 @@
     </div>
     @stack('scripts')
     <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(function (err) { console.error('SW registration failed', err); });
+        }
+
         (function () {
+            function urlBase64ToUint8Array(base64String) {
+                const padding = '='.repeat((4 - base64String.length % 4) % 4);
+                const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+                const rawData = window.atob(base64);
+                return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+            }
+
+            async function subscribeAdminPush() {
+                const vapidPublicKey = window.vapidPublicKey;
+                if (!vapidPublicKey || !('serviceWorker' in navigator) || !('PushManager' in window)) return;
+                const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                try {
+                    const registration = await navigator.serviceWorker.ready;
+                    const existing = await registration.pushManager.getSubscription();
+                    if (existing) {
+                        await sendAdminSubscription(existing, csrf);
+                        return;
+                    }
+                    const subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+                    });
+                    await sendAdminSubscription(subscription, csrf);
+                } catch (e) { console.error('Admin push subscribe failed', e); }
+            }
+
+            async function sendAdminSubscription(subscription, csrf) {
+                const keys = subscription.getKey ? {
+                    p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('p256dh')))),
+                    auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('auth')))),
+                } : {};
+                await fetch('{{ route('admin.chat.subscribe') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrf,
+                    },
+                    body: JSON.stringify({
+                        endpoint: subscription.endpoint,
+                        keys: keys,
+                        content_encoding: (subscription.options && subscription.options.contentEncoding) || 'aes128gcm',
+                    }),
+                });
+            }
+
+            subscribeAdminPush();
+
             const chatLink = document.getElementById('chat-notification-link');
             let lastCount = 0;
 

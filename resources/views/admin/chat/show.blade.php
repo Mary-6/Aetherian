@@ -7,7 +7,7 @@
         <div class="px-6 py-4 border-b flex justify-between items-center">
             <div>
                 <h2 class="font-bold">{{ $room->guest_name ?: 'Guest' }}</h2>
-                <p class="text-sm text-slate-500">{{ $room->guest_email ?: 'No email' }} &bull; {{ $room->room_id }}</p>
+                <p class="text-sm text-slate-500">{{ $room->guest_email ?: 'No email' }}@if ($room->guest_phone) &bull; {{ $room->guest_phone }}@endif &bull; {{ $room->room_id }}</p>
             </div>
             <a href="{{ route('admin.chat.index') }}" class="text-sm text-brand-600 hover:underline">Back to rooms</a>
         </div>

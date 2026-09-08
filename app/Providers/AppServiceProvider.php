@@ -31,12 +31,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         View::composer('layouts.admin', function ($view) {
-            $pendingChatCount = ChatRoom::where('status', 'open')
-                ->where(function ($query) {
-                    $query->whereHas('lastMessage', fn ($q) => $q->where('is_admin', false))
-                          ->orWhereDoesntHave('lastMessage');
-                })
-                ->count();
+            $pendingChatCount = ChatRoom::sum('admin_unread_count');
 
             $view->with('pendingChatCount', $pendingChatCount);
         });

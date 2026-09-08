@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ChatMessage;
 use App\Models\ChatRoom;
+use App\Notifications\ChatReplyToCustomer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class AdminChatController extends Controller
 {
@@ -21,12 +22,7 @@ class AdminChatController extends Controller
 
     public function count()
     {
-        $count = ChatRoom::where('status', 'open')
-            ->where(function ($query) {
-                $query->whereHas('lastMessage', fn ($q) => $q->where('is_admin', false))
-                      ->orWhereDoesntHave('lastMessage');
-            })
-            ->count();
+        $count = ChatRoom::sum('admin_unread_count');
 
         return response()->json(['count' => $count]);
     }
@@ -39,6 +35,13 @@ class AdminChatController extends Controller
             $room->assigned_to = auth()->id();
             $room->save();
         }
+
+        $room->messages()
+            ->where('is_admin', false)
+            ->where('read_by_admin', false)
+            ->update(['read_by_admin' => true]);
+
+        $room->update(['admin_unread_count' => 0]);
 
         return view('admin.chat.show', compact('room'));
     }
@@ -62,6 +65,14 @@ class AdminChatController extends Controller
         }
         $room->save();
 
+        $room->increment('guest_unread_count');
+
+        try {
+            $room->notify(new ChatReplyToCustomer($room, $message));
+        } catch (\Throwable $e) {
+            logger()->error('Failed to send customer web push notification', ['exception' => $e->getMessage()]);
+        }
+
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'id' => $message->id,
@@ -73,5 +84,25 @@ class AdminChatController extends Controller
         }
 
         return back()->with('success', 'Reply sent.');
+    }
+
+    public function subscribe(Request $request)
+    {
+        $data = $request->validate([
+            'endpoint' => 'required|string',
+            'keys' => 'required|array',
+            'keys.p256dh' => 'required|string',
+            'keys.auth' => 'required|string',
+            'content_encoding' => 'nullable|string',
+        ]);
+
+        $request->user()->updatePushSubscription(
+            $data['endpoint'],
+            $data['keys']['p256dh'],
+            $data['keys']['auth'],
+            $data['content_encoding'] ?? null
+        );
+
+        return response()->json(['success' => true]);
     }
 }

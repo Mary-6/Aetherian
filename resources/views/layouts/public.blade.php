@@ -130,10 +130,16 @@
         </div>
     </footer>
 
+    <script>window.vapidPublicKey = '{{ config('webpush.vapid.public_key') }}';</script>
+
     @include('components.chat-widget')
 
     <script src="{{ asset('vendor/lucide.min.js') }}"></script>
     <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(function (err) { console.error('SW registration failed', err); });
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             lucide.createIcons();
 

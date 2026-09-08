@@ -5,7 +5,7 @@
 @section('content')
     @php $meta = $shipment->meta ?? []; @endphp
     <div class="bg-white p-6 rounded shadow mb-6">
-        <div class="flex justify-between items-start">
+        <div class="flex justify-between items-start flex-wrap gap-4">
             <div>
                 <h2 class="text-2xl font-bold">{{ $shipment->tracking_number }}</h2>
                 <div class="mt-2"><span class="px-3 py-1 rounded bg-blue-100 text-blue-800 text-sm font-bold">{{ $shipment->status }}</span></div>
@@ -18,35 +18,43 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 text-sm">
             <div>
-                <h3 class="font-bold mb-2">Sender</h3>
+                <h3 class="font-bold mb-2 text-navy">Shipper Information</h3>
                 <p><strong>Name:</strong> {{ $shipment->sender_name }}</p>
                 <p><strong>Email:</strong> {{ $shipment->sender_email ?? 'N/A' }}</p>
                 <p><strong>Phone:</strong> {{ $shipment->sender_phone ?? 'N/A' }}</p>
                 <p><strong>Address:</strong> {{ $shipment->sender_address ?? 'N/A' }}</p>
+                <p><strong>City:</strong> {{ $shipment->sender_city ?? 'N/A' }}</p>
                 <p><strong>Country:</strong> {{ $shipment->sender_country ?? 'N/A' }}</p>
             </div>
             <div>
-                <h3 class="font-bold mb-2">Recipient</h3>
+                <h3 class="font-bold mb-2 text-navy">Receiver Information</h3>
                 <p><strong>Name:</strong> {{ $shipment->recipient_name }}</p>
                 <p><strong>Email:</strong> {{ $shipment->recipient_email ?? 'N/A' }}</p>
                 <p><strong>Phone:</strong> {{ $shipment->recipient_phone ?? 'N/A' }}</p>
                 <p><strong>Address:</strong> {{ $shipment->recipient_address ?? 'N/A' }}</p>
+                <p><strong>City:</strong> {{ $shipment->recipient_city ?? 'N/A' }}</p>
                 <p><strong>Country:</strong> {{ $shipment->recipient_country ?? 'N/A' }}</p>
             </div>
         </div>
 
-        <div class="mt-6 text-sm">
-            <h3 class="font-bold mb-2">Shipment Info</h3>
-            <p><strong>Origin:</strong> {{ $shipment->origin ?? 'N/A' }} &rarr; <strong>Destination:</strong> {{ $shipment->destination ?? 'N/A' }}</p>
-            <p><strong>Service:</strong> {{ $shipment->service }} | <strong>Weight:</strong> {{ $shipment->weight ?? 'N/A' }} | <strong>Dimensions:</strong> {{ $shipment->dimensions ?? 'N/A' }}</p>
-            <p><strong>Declared Value:</strong> {{ $shipment->declared_value ?? 'N/A' }} | <strong>Shipping Cost:</strong> {{ $shipment->shipping_cost ?? 'N/A' }} | <strong>Tax:</strong> {{ $shipment->tax ?? 'N/A' }} | <strong>Total:</strong> {{ $shipment->total_cost ?? 'N/A' }}</p>
-            <p><strong>Payment Status:</strong> {{ $shipment->payment_status }}</p>
-            <p><strong>Branch:</strong> {{ $shipment->branch?->name ?? 'N/A' }} | <strong>Driver:</strong> {{ $shipment->driver?->name ?? 'N/A' }}</p>
-            <p><strong>Qty:</strong> {{ $meta['quantity'] ?? 'N/A' }} | <strong>Piece Type:</strong> {{ $meta['piece_type'] ?? 'N/A' }} | <strong>Package Type:</strong> {{ $meta['package_type'] ?? 'N/A' }} | <strong>Product:</strong> {{ $meta['product'] ?? 'N/A' }}</p>
-            <p><strong>Carrier Ref:</strong> {{ $meta['carrier_reference'] ?? 'N/A' }} | <strong>Payment Mode:</strong> {{ $meta['payment_mode'] ?? 'N/A' }} | <strong>Total Freight:</strong> {{ $meta['total_freight'] ?? 'N/A' }}</p>
-            <p><strong>Current Coordinates:</strong> {{ $meta['current_lat'] ?? 'N/A' }}, {{ $meta['current_lng'] ?? 'N/A' }}</p>
+        <div class="mt-6 text-sm space-y-1">
+            <h3 class="font-bold mb-2 text-navy">Shipment Information</h3>
+            <p><strong>Origin:</strong> {{ $shipment->origin ?: collect([$shipment->sender_city, $shipment->sender_country])->filter()->implode(', ') ?: 'N/A' }} &rarr; <strong>Destination:</strong> {{ $shipment->destination ?: collect([$shipment->recipient_city, $shipment->recipient_country])->filter()->implode(', ') ?: 'N/A' }}</p>
+            <p><strong>Carrier:</strong> {{ $shipment->carrier ?? config('app.name') }}</p>
+            <p><strong>Type of Shipment:</strong> {{ $meta['shipment_type'] ?? 'N/A' }}</p>
+            <p><strong>Service:</strong> {{ $shipment->service ? ucwords(str_replace(['_', '-'], ' ', $shipment->service)) : 'N/A' }}</p>
+            <p><strong>Status:</strong> {{ $shipment->status ? ucwords(str_replace(['_', '-'], ' ', $shipment->status)) : 'N/A' }}</p>
+            <p><strong>Package:</strong> {{ $meta['package_type'] ?? 'N/A' }} | <strong>Product:</strong> {{ $meta['product'] ?? 'N/A' }} | <strong>Qty:</strong> {{ $meta['quantity'] ?? '-' }}</p>
+            <p><strong>Piece Type:</strong> {{ $meta['piece_type'] ?? 'N/A' }} | <strong>Weight:</strong> {{ $shipment->weight ?? 'N/A' }} kg</p>
+            <p><strong>Dimensions:</strong> {{ collect([$meta['length_cm'], $meta['width_cm'], $meta['height_cm']])->filter()->implode(' x ') ?: 'N/A' }} cm</p>
+            <p><strong>Carrier Reference No.:</strong> {{ $meta['carrier_reference'] ?? 'N/A' }}</p>
+            <p><strong>Payment Mode:</strong> {{ $meta['payment_mode'] ?? 'N/A' }}</p>
+            <p><strong>Total Freight:</strong> {{ $meta['total_freight'] ?? 'N/A' }}</p>
+            <p><strong>Declared Value:</strong> {{ $shipment->declared_value ?? 'N/A' }} | <strong>Amount Due:</strong> {{ $shipment->payment_amount ?? 'N/A' }} <strong>{{ $shipment->currency ?? 'USD' }}</strong></p>
+            <p><strong>Pick-up Date:</strong> {{ $shipment->pickup_date?->format('M d, Y') ?? 'N/A' }} | <strong>Pick-up Time:</strong> {{ $meta['pickup_time'] ?? 'N/A' }}</p>
+            <p><strong>Departure Time:</strong> {{ $shipment->departure_time?->format('M d, Y H:i') ?? 'N/A' }}</p>
+            <p><strong>Expected Delivery:</strong> {{ $shipment->estimated_delivery_at?->format('M d, Y') ?? 'N/A' }}</p>
             <p><strong>Comments:</strong> {{ $meta['comments'] ?? 'N/A' }}</p>
-            <p><strong>Notes:</strong> {{ $shipment->notes ?? 'N/A' }}</p>
         </div>
     </div>
 
@@ -79,13 +87,17 @@
         <script>
             (function () {
                 async function geocode(query) {
-                    try {
-                        const res = await fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(query) + '&count=1');
-                        const data = await res.json();
-                        if (data && data.results && data.results[0]) {
-                            return { lat: data.results[0].latitude, lng: data.results[0].longitude };
-                        }
-                    } catch (e) { console.error('Geocode error', e); }
+                    const attempts = [query, query.split(',')[0].trim(), query.replace(/,?\s*(USA?|United States|United Kingdom|UK|England|Scotland|Wales)\s*$/i, '').trim()];
+                    for (const q of attempts) {
+                        if (!q) continue;
+                        try {
+                            const res = await fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(q) + '&count=1');
+                            const data = await res.json();
+                            if (data && data.results && data.results[0]) {
+                                return { lat: data.results[0].latitude, lng: data.results[0].longitude };
+                            }
+                        } catch (e) { console.error('Geocode error', e); }
+                    }
                     return null;
                 }
 
@@ -93,8 +105,8 @@
                     return { lat: start.lat + (end.lat - start.lat) * fraction, lng: start.lng + (end.lng - start.lng) * fraction };
                 }
 
-                const origin = {!! json_encode($shipment->origin ?: ($shipment->sender_country ?: ''), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
-                const destination = {!! json_encode($shipment->destination ?: ($shipment->recipient_country ?: ''), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
+                const origin = {!! json_encode($shipment->origin ?: collect([$shipment->sender_city, $shipment->sender_country])->filter()->implode(', ') ?: '', JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
+                const destination = {!! json_encode($shipment->destination ?: collect([$shipment->recipient_city, $shipment->recipient_country])->filter()->implode(', ') ?: '', JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
                 const status = {!! json_encode($shipment->status, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
                 const currentLat = {!! json_encode($meta['current_lat'] ?? null, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
                 const currentLng = {!! json_encode($meta['current_lng'] ?? null, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};

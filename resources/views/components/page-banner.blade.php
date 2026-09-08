@@ -1,8 +1,8 @@
 @props(['title', 'breadcrumb' => null, 'image' => asset('images/truck.jpg')])
 
-<section class="relative overflow-hidden rounded-[20px] mx-4 sm:mx-6 lg:mx-8 mt-4">
+<section class="relative overflow-hidden rounded-[20px] mx-4 sm:mx-6 lg:mx-8 mt-4 max-h-[420px]">
     <div class="absolute inset-0">
-        <img src="{{ $image }}" alt="{{ $title }}" class="w-full h-full object-cover">
+        <img src="{{ $image }}" alt="{{ $title }}" class="w-full h-full object-cover" loading="lazy">
         <div class="absolute inset-0 bg-navy/80"></div>
     </div>
     <div class="relative max-w-7xl mx-auto px-6 py-24 lg:py-32">

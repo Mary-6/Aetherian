@@ -48,10 +48,10 @@
                 <div class="relative">
                     <div class="grid grid-cols-2 gap-4">
                         <div class="rounded-[20px] overflow-hidden shadow-xl">
-                            <img src="{{ asset('images/warehouse.jpg') }}" alt="Warehouse" class="w-full h-full object-cover">
+                            <img src="{{ asset('images/warehouse.jpg') }}" alt="Warehouse" class="w-full max-h-[260px] sm:max-h-[320px] lg:max-h-[420px] object-cover" loading="lazy">
                         </div>
                         <div class="rounded-[20px] overflow-hidden shadow-xl mt-8">
-                            <img src="{{ asset('images/truck.jpg') }}" alt="Truck" class="w-full h-full object-cover">
+                            <img src="{{ asset('images/truck.jpg') }}" alt="Truck" class="w-full max-h-[260px] sm:max-h-[320px] lg:max-h-[420px] object-cover" loading="lazy">
                         </div>
                     </div>
                     <div class="absolute bottom-8 left-1/2 -translate-x-1/2 bg-accent-500 text-navy py-4 px-8 rounded-2xl font-bold text-xl shadow-lg">
@@ -102,7 +102,7 @@
                     </div>
                 </div>
                 <div class="rounded-[20px] overflow-hidden shadow-2xl">
-                    <img src="{{ asset('images/ship.jpg') }}" alt="Shipping" class="w-full h-auto object-cover">
+                    <img src="{{ asset('images/ship.jpg') }}" alt="Shipping" class="w-full max-h-[400px] sm:max-h-[520px] object-cover" loading="lazy">
                 </div>
             </div>
         </div>

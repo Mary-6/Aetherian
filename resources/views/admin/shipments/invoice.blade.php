@@ -5,8 +5,8 @@
 @section('content')
     @php
         $meta = $shipment->meta ?? [];
-        $currency = $meta['currency'] ?? 'USD';
-        $symbol = $currency === 'USD' ? '$' : ($currency === 'EUR' ? '€' : $currency . ' ');
+        $currency = $shipment->currency ?? 'USD';
+        $symbol = ['USD' => '$', 'EUR' => '€', 'GBP' => '£'][$currency] ?? $currency . ' ';
     @endphp
 
     <div class="bg-white shadow-lg rounded-lg overflow-hidden">
@@ -24,7 +24,7 @@
                     <h2 class="text-xl font-bold uppercase tracking-wide text-navy">Invoice</h2>
                     <p class="text-sm text-slate-600"><strong>Tracking #:</strong> {{ $shipment->tracking_number }}</p>
                     <p class="text-sm text-slate-600"><strong>Date:</strong> {{ now()->format('M d, Y') }}</p>
-                    <p class="text-sm text-slate-600"><strong>Status:</strong> {{ $shipment->status }}</p>
+                    <p class="text-sm text-slate-600"><strong>Status:</strong> {{ $shipment->status ? ucwords(str_replace(['_', '-'], ' ', $shipment->status)) : 'N/A' }}</p>
                 </div>
             </div>
         </div>
@@ -41,6 +41,7 @@
                 <h3 class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Bill To (Sender)</h3>
                 <p class="font-semibold text-navy">{{ $shipment->sender_name }}</p>
                 <p class="text-sm text-slate-700">{{ $shipment->sender_address ?? 'N/A' }}</p>
+                <p class="text-sm text-slate-700">{{ collect([$shipment->sender_city, $shipment->sender_country])->filter()->implode(', ') ?: 'N/A' }}</p>
                 <p class="text-sm text-slate-700">{{ $shipment->sender_phone ?? 'N/A' }}</p>
                 <p class="text-sm text-slate-700">{{ $shipment->sender_email ?? 'N/A' }}</p>
             </div>
@@ -52,14 +53,16 @@
                 <div>
                     <p class="font-semibold text-navy">{{ $shipment->recipient_name }}</p>
                     <p class="text-sm text-slate-700">{{ $shipment->recipient_address ?? 'N/A' }}</p>
+                    <p class="text-sm text-slate-700">{{ collect([$shipment->recipient_city, $shipment->recipient_country])->filter()->implode(', ') ?: 'N/A' }}</p>
                     <p class="text-sm text-slate-700">{{ $shipment->recipient_phone ?? 'N/A' }}</p>
                     <p class="text-sm text-slate-700">{{ $shipment->recipient_email ?? 'N/A' }}</p>
                 </div>
                 <div>
                     <p class="text-sm text-slate-700"><strong>Origin:</strong> {{ $shipment->origin ?? 'N/A' }}</p>
                     <p class="text-sm text-slate-700"><strong>Destination:</strong> {{ $shipment->destination ?? 'N/A' }}</p>
-                    <p class="text-sm text-slate-700"><strong>Service:</strong> {{ $shipment->service }}</p>
-                    <p class="text-sm text-slate-700"><strong>Payment Status:</strong> {{ $shipment->payment_status }}</p>
+                    <p class="text-sm text-slate-700"><strong>Carrier:</strong> {{ $shipment->carrier ?? config('app.name') }}</p>
+                    <p class="text-sm text-slate-700"><strong>Service:</strong> {{ $shipment->service ? ucwords(str_replace(['_', '-'], ' ', $shipment->service)) : 'N/A' }}</p>
+                    <p class="text-sm text-slate-700"><strong>Payment Mode:</strong> {{ $meta['payment_mode'] ?? 'N/A' }}</p>
                 </div>
             </div>
         </div>
@@ -80,7 +83,7 @@
                         <tr class="border-t border-slate-100">
                             <td class="px-4 py-3">{{ $meta['product'] ?? 'General cargo' }}</td>
                             <td class="px-4 py-3">{{ $meta['quantity'] ?? 1 }}</td>
-                            <td class="px-4 py-3">{{ $shipment->weight ?? '-' }} kg &bull; {{ $shipment->dimensions ?? '-' }}</td>
+                            <td class="px-4 py-3">{{ $shipment->weight ?? '-' }} kg &bull; {{ collect([$meta['length_cm'], $meta['width_cm'], $meta['height_cm']])->filter()->implode(' x ') ?: '-' }} cm</td>
                             <td class="px-4 py-3 text-right">{{ $meta['package_type'] ?? 'N/A' }}</td>
                         </tr>
                     </tbody>
@@ -95,17 +98,15 @@
                     <span class="text-slate-600">Declared Value</span>
                     <span class="font-medium">{{ $symbol . number_format($shipment->declared_value ?? 0, 2) }}</span>
                 </div>
-                <div class="flex justify-between py-2 border-b border-slate-100">
-                    <span class="text-slate-600">Shipping Cost</span>
-                    <span class="font-medium">{{ $symbol . number_format($shipment->shipping_cost ?? 0, 2) }}</span>
-                </div>
-                <div class="flex justify-between py-2 border-b border-slate-100">
-                    <span class="text-slate-600">Tax</span>
-                    <span class="font-medium">{{ $symbol . number_format($shipment->tax ?? 0, 2) }}</span>
-                </div>
+                @if ($meta['total_freight'])
+                    <div class="flex justify-between py-2 border-b border-slate-100">
+                        <span class="text-slate-600">Total Freight</span>
+                        <span class="font-medium">{{ $meta['total_freight'] }}</span>
+                    </div>
+                @endif
                 <div class="flex justify-between py-3 text-lg font-bold text-navy">
-                    <span>Total</span>
-                    <span>{{ $symbol . number_format($shipment->total_cost ?? 0, 2) }}</span>
+                    <span>Amount Due</span>
+                    <span>{{ $symbol . number_format($shipment->payment_amount ?? 0, 2) }}</span>
                 </div>
             </div>
         </div>

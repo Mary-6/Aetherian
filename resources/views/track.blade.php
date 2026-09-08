@@ -8,9 +8,9 @@
     @endphp
 
     {{-- Page banner --}}
-    <section class="relative overflow-hidden rounded-[20px] mx-4 sm:mx-6 lg:mx-8 mt-4">
+    <section class="relative overflow-hidden rounded-[20px] mx-4 sm:mx-6 lg:mx-8 mt-4 max-h-[420px]">
         <div class="absolute inset-0">
-            <img src="{{ asset('images/truck.jpg') }}" alt="Logistics banner" class="w-full h-full object-cover">
+            <img src="{{ asset('images/truck.jpg') }}" alt="Logistics banner" class="w-full h-full object-cover" loading="lazy">
             <div class="absolute inset-0 bg-navy/80"></div>
         </div>
         <div class="relative max-w-7xl mx-auto px-6 py-24 lg:py-32">
@@ -46,18 +46,19 @@
                     @if ($shipment)
                         @php
                             $meta = $shipment->meta ?? [];
-                            $currency = $meta['currency'] ?? 'USD';
+                            $currency = $shipment->currency ?? 'USD';
                             $symbol = ['USD' => '$', 'EUR' => '€', 'GBP' => '£'][$currency] ?? $currency.' ';
-                            $origin = $shipment->origin ?: collect([$shipment->sender_country])->filter()->first() ?: 'N/A';
-                            $destination = $shipment->destination ?: collect([$shipment->recipient_country])->filter()->first() ?: 'N/A';
-                            $packageType = $meta['package_type'] ?? $meta['product'] ?? '-';
+                            $origin = $shipment->origin ?: collect([$shipment->sender_city, $shipment->sender_country])->filter()->implode(', ') ?: 'N/A';
+                            $destination = $shipment->destination ?: collect([$shipment->recipient_city, $shipment->recipient_country])->filter()->implode(', ') ?: 'N/A';
+                            $packageType = $meta['package_type'] ?? '-';
                             $product = $meta['product'] ?? '-';
-                            $carrier = $meta['carrier_reference'] ?? 'Aetherian Cargo';
+                            $carrier = $shipment->carrier ?? 'Aetherian Cargo';
                             $shipmentType = $meta['shipment_type'] ?? ($shipment->service ? ucwords(str_replace(['_', '-'], ' ', $shipment->service)) : '-');
                             $weight = $shipment->weight ? $shipment->weight . ' kg' : '-';
                             $paymentMode = $meta['payment_mode'] ?? '-';
-                            $totalFreight = $meta['total_freight'] ? $symbol . number_format($meta['total_freight'], 2) : ($shipment->total_cost ? $symbol . number_format($shipment->total_cost, 2) : '-');
-                            $totalCost = $shipment->total_cost ? $symbol . number_format($shipment->total_cost, 2) : '-';
+                            $totalFreight = $meta['total_freight'] ?? '-';
+                            $totalCost = $shipment->payment_amount ? $symbol . number_format($shipment->payment_amount, 2) : '-';
+                            $dimensions = collect([$meta['length_cm'] ?? null, $meta['width_cm'] ?? null, $meta['height_cm'] ?? null])->filter()->implode(' x ') ?: '-';
                         @endphp
 
                         <div class="bg-white rounded-none sm:rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-10 print:shadow-none print:border-0">
@@ -81,7 +82,7 @@
                                     <div class="space-y-1 text-slate-600">
                                         <p class="font-semibold text-slate-900">{{ $shipment->sender_name }}</p>
                                         <p>{{ $shipment->sender_address ?? 'N/A' }}</p>
-                                        <p>{{ collect([$shipment->origin, $shipment->sender_country])->filter()->implode(', ') ?: 'N/A' }}</p>
+                                        <p>{{ collect([$shipment->sender_city, $shipment->sender_country])->filter()->implode(', ') ?: 'N/A' }}</p>
                                         @if ($shipment->sender_phone)<p class="flex items-center gap-2"><i data-lucide="phone" class="w-3.5 h-3.5 text-slate-400"></i> {{ $shipment->sender_phone }}</p>@endif
                                         @if ($shipment->sender_email)<p class="flex items-center gap-2"><i data-lucide="mail" class="w-3.5 h-3.5 text-slate-400"></i> {{ $shipment->sender_email }}</p>@endif
                                     </div>
@@ -91,7 +92,7 @@
                                     <div class="space-y-1 text-slate-600">
                                         <p class="font-semibold text-slate-900">{{ $shipment->recipient_name }}</p>
                                         <p>{{ $shipment->recipient_address ?? 'N/A' }}</p>
-                                        <p>{{ collect([$shipment->destination, $shipment->recipient_country])->filter()->implode(', ') ?: 'N/A' }}</p>
+                                        <p>{{ collect([$shipment->recipient_city, $shipment->recipient_country])->filter()->implode(', ') ?: 'N/A' }}</p>
                                         @if ($shipment->recipient_phone)<p class="flex items-center gap-2"><i data-lucide="phone" class="w-3.5 h-3.5 text-slate-400"></i> {{ $shipment->recipient_phone }}</p>@endif
                                         @if ($shipment->recipient_email)<p class="flex items-center gap-2"><i data-lucide="mail" class="w-3.5 h-3.5 text-slate-400"></i> {{ $shipment->recipient_email }}</p>@endif
                                     </div>
@@ -117,21 +118,21 @@
                                     <div><p class="font-bold text-slate-700">Product</p><p class="text-slate-600">{{ $product }}</p></div>
                                     <div><p class="font-bold text-slate-700">Qty</p><p class="text-slate-600">{{ $meta['quantity'] ?? '-' }}</p></div>
                                     <div><p class="font-bold text-slate-700">Payment Mode</p><p class="text-slate-600">{{ $paymentMode }}</p></div>
-                                    <div><p class="font-bold text-slate-700">Payment Status</p><p class="text-slate-600">{{ $shipment->payment_status ? ucwords($shipment->payment_status) : '-' }}</p></div>
                                     <div><p class="font-bold text-slate-700">Currency</p><p class="text-slate-600">{{ $currency }}</p></div>
                                     <div><p class="font-bold text-slate-700">Total Freight</p><p class="text-slate-600">{{ $totalFreight }}</p></div>
-                                    <div><p class="font-bold text-slate-700">Total Cost</p><p class="text-slate-600">{{ $totalCost }}</p></div>
-                                    @if (!empty($meta['estimated_delivery']))
-                                        <div><p class="font-bold text-slate-700">Expected Delivery Date</p><p class="text-slate-600">{{ $meta['estimated_delivery'] }}</p></div>
-                                    @endif
-                                    @if (!empty($meta['departure_time']))
-                                        <div><p class="font-bold text-slate-700">Departure Time</p><p class="text-slate-600">{{ $meta['departure_time'] }}</p></div>
-                                    @endif
-                                    @if (!empty($meta['pickup_date']))
-                                        <div><p class="font-bold text-slate-700">Pick-up Date</p><p class="text-slate-600">{{ $meta['pickup_date'] }}</p></div>
+                                    <div><p class="font-bold text-slate-700">Amount Due</p><p class="text-slate-600">{{ $totalCost }}</p></div>
+                                    <div><p class="font-bold text-slate-700">Dimensions</p><p class="text-slate-600">{{ $dimensions }} cm</p></div>
+                                    @if ($shipment->pickup_date)
+                                        <div><p class="font-bold text-slate-700">Pick-up Date</p><p class="text-slate-600">{{ $shipment->pickup_date->format('M d, Y') }}</p></div>
                                     @endif
                                     @if (!empty($meta['pickup_time']))
                                         <div><p class="font-bold text-slate-700">Pick-up Time</p><p class="text-slate-600">{{ $meta['pickup_time'] }}</p></div>
+                                    @endif
+                                    @if ($shipment->departure_time)
+                                        <div><p class="font-bold text-slate-700">Departure Time</p><p class="text-slate-600">{{ $shipment->departure_time->format('M d, Y H:i') }}</p></div>
+                                    @endif
+                                    @if ($shipment->estimated_delivery_at)
+                                        <div><p class="font-bold text-slate-700">Expected Delivery Date</p><p class="text-slate-600">{{ $shipment->estimated_delivery_at->format('M d, Y') }}</p></div>
                                     @endif
                                     @if ($shipment->shipped_at)
                                         <div><p class="font-bold text-slate-700">Shipped At</p><p class="text-slate-600">{{ $shipment->shipped_at->format('M d, Y H:i') }}</p></div>
