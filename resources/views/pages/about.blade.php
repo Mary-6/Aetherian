@@ -119,7 +119,7 @@
                 <i data-lucide="phone" class="w-8 h-8 text-accent-500"></i>
                 <div>
                     <p class="text-sm text-slate-300">Need help?</p>
-                    <a href="tel:1-800-AETHER" class="text-2xl font-bold hover:text-accent-500 transition-colors">1-800-AETHER</a>
+                    <a href="tel:{{ $companyPhone }}" class="text-2xl font-bold hover:text-accent-500 transition-colors">{{ $companyPhone }}</a>
                 </div>
             </div>
         </div>

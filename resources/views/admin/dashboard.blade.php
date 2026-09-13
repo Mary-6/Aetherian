@@ -9,7 +9,7 @@
     </div>
 
     {{-- Stat cards --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
         <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
             <p class="text-sm text-slate-500 mb-1">Total Shipments</p>
             <p class="text-3xl font-bold text-navy">{{ number_format($counts['shipments']) }}</p>
@@ -21,10 +21,6 @@
         <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
             <p class="text-sm text-slate-500 mb-1">Delivered</p>
             <p class="text-3xl font-bold text-green-600">{{ number_format($counts['delivered']) }}</p>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-            <p class="text-sm text-slate-500 mb-1">Revenue</p>
-            <p class="text-3xl font-bold text-navy">${{ number_format($counts['revenue'], 2) }}</p>
         </div>
     </div>
 

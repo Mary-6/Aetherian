@@ -23,6 +23,8 @@ class ShipmentController extends Controller
     public function create()
     {
         $shipment = new Shipment();
+        $shipment->meta = ['carrier_reference' => $this->generateCarrierReference()];
+
         return view('admin.shipments.create', compact('shipment'));
     }
 
@@ -47,8 +49,6 @@ class ShipmentController extends Controller
             'weight' => 'required|numeric',
             'service' => 'required|string|in:AIR_FREIGHT,SEA_FREIGHT,ROAD_FREIGHT,EXPRESS,OVERNIGHT',
             'declared_value' => 'required|numeric',
-            'payment_amount' => 'nullable|numeric',
-            'currency' => 'nullable|string|max:3',
             'pickup_date' => 'nullable|date',
             'departure_time' => 'nullable|date',
             'estimated_delivery_at' => 'nullable|date',
@@ -59,8 +59,8 @@ class ShipmentController extends Controller
         $data['tracking_number'] = $this->generateTrackingNumber();
         $data['created_by'] = auth()->id();
         $data['carrier'] = $data['carrier'] ?: config('app.name');
-        $data['currency'] = $data['currency'] ?: 'USD';
         $data['meta'] = $request->input('meta', []);
+        $data['meta']['carrier_reference'] = $data['meta']['carrier_reference'] ?: $this->generateCarrierReference();
 
         $shipment = Shipment::create($data);
 
@@ -107,8 +107,6 @@ class ShipmentController extends Controller
             'weight' => 'required|numeric',
             'service' => 'required|string|in:AIR_FREIGHT,SEA_FREIGHT,ROAD_FREIGHT,EXPRESS,OVERNIGHT',
             'declared_value' => 'required|numeric',
-            'payment_amount' => 'nullable|numeric',
-            'currency' => 'nullable|string|max:3',
             'pickup_date' => 'nullable|date',
             'departure_time' => 'nullable|date',
             'estimated_delivery_at' => 'nullable|date',
@@ -117,10 +115,12 @@ class ShipmentController extends Controller
         ]);
 
         $data['carrier'] = $data['carrier'] ?: config('app.name');
-        $data['currency'] = $data['currency'] ?: 'USD';
         $data['meta'] = $request->input('meta', []);
         if (! $data['meta'] && $shipment->meta) {
             $data['meta'] = $shipment->meta;
+        }
+        if (empty($data['meta']['carrier_reference'])) {
+            $data['meta']['carrier_reference'] = $shipment->meta['carrier_reference'] ?? $this->generateCarrierReference();
         }
 
         $oldStatus = $shipment->status;
@@ -163,5 +163,10 @@ class ShipmentController extends Controller
     private function generateTrackingNumber(): string
     {
         return 'AC' . strtoupper(Str::random(8));
+    }
+
+    private function generateCarrierReference(): string
+    {
+        return 'CARGO-' . strtoupper(Str::random(6));
     }
 }

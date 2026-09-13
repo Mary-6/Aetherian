@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ChatRoom;
 use App\Notifications\ChatReplyToCustomer;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 
@@ -71,6 +72,10 @@ class AdminChatController extends Controller
             $room->notify(new ChatReplyToCustomer($room, $message));
         } catch (\Throwable $e) {
             logger()->error('Failed to send customer web push notification', ['exception' => $e->getMessage()]);
+        }
+
+        if ($room->guest_phone) {
+            SmsService::send($room->guest_phone, "Aetherian Cargo reply: {$data['content']}");
         }
 
         if ($request->ajax() || $request->wantsJson()) {

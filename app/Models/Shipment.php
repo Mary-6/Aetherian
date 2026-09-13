@@ -32,8 +32,6 @@ class Shipment extends Model
         'service',
         'status',
         'declared_value',
-        'payment_amount',
-        'currency',
         'pickup_date',
         'departure_time',
         'estimated_delivery_at',
@@ -52,7 +50,6 @@ class Shipment extends Model
     protected $casts = [
         'weight' => 'decimal:3',
         'declared_value' => 'decimal:2',
-        'payment_amount' => 'decimal:2',
         'shipping_cost' => 'decimal:2',
         'tax' => 'decimal:2',
         'total_cost' => 'decimal:2',

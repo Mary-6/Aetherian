@@ -6,6 +6,7 @@ use App\Models\ChatMessage;
 use App\Models\ChatRoom;
 use App\Models\User;
 use App\Notifications\ChatMessageToAdmin;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 
@@ -151,6 +152,11 @@ class ChatController extends Controller
             }
         } catch (\Throwable $e) {
             logger()->error('Failed to send admin web push notification', ['exception' => $e->getMessage()]);
+        }
+
+        $adminPhone = SmsService::adminPhone();
+        if ($adminPhone) {
+            SmsService::send($adminPhone, "New chat from {$room->guest_name}: {$data['content']}");
         }
 
         return response()->json([

@@ -32,8 +32,6 @@ class ShipmentSeeder extends Seeder
                 'weight' => 12.5,
                 'service' => 'EXPRESS',
                 'declared_value' => 500.00,
-                'payment_amount' => 135.00,
-                'currency' => 'USD',
                 'pickup_date' => now()->subDays(3)->format('Y-m-d'),
                 'departure_time' => now()->subDays(2),
                 'estimated_delivery_at' => now()->addDays(3)->format('Y-m-d'),

@@ -16,22 +16,22 @@
                     </p>
 
                     <div class="space-y-5">
-                        <a href="tel:1-800-AETHER" class="flex items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 group">
+                        <a href="tel:{{ $companyPhone }}" class="flex items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 group">
                             <div class="w-12 h-12 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-colors">
                                 <i data-lucide="phone" class="w-5 h-5"></i>
                             </div>
                             <div>
                                 <p class="text-sm text-slate-500">Phone</p>
-                                <p class="font-semibold text-slate-900 group-hover:text-brand-600 transition-colors">1-800-AETHER</p>
+                                <p class="font-semibold text-slate-900 group-hover:text-brand-600 transition-colors">{{ $companyPhone }}</p>
                             </div>
                         </a>
-                        <a href="mailto:support@aetheriancargo.com" class="flex items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 group">
+                        <a href="mailto:{{ $companyEmail }}" class="flex items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 group">
                             <div class="w-12 h-12 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition-colors">
                                 <i data-lucide="mail" class="w-5 h-5"></i>
                             </div>
                             <div>
                                 <p class="text-sm text-slate-500">Email</p>
-                                <p class="font-semibold text-slate-900 group-hover:text-brand-600 transition-colors">support@aetheriancargo.com</p>
+                                <p class="font-semibold text-slate-900 group-hover:text-brand-600 transition-colors">{{ $companyEmail }}</p>
                             </div>
                         </a>
                     </div>

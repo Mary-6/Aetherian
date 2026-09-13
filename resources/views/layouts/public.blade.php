@@ -16,8 +16,8 @@
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <a href="{{ url('/') }}" class="flex items-center gap-2 font-bold text-xl shrink-0">
-                    <img src="{{ asset('brand-logo.png') }}" alt="{{ config('app.name') }}" class="w-8 h-8 rounded">
-                    <span class="text-base sm:text-lg font-bold truncate max-w-[140px] sm:max-w-none">{{ config('app.name') }}</span>
+                    <img src="{{ asset('brand-logo.png') }}" alt="{{ $companyName }}" class="w-8 h-8 rounded">
+                    <span class="text-base sm:text-lg font-bold truncate max-w-[140px] sm:max-w-none">{{ $companyName }}</span>
                 </a>
 
                 <div class="hidden lg:flex items-center justify-center flex-1 gap-8">
@@ -53,7 +53,7 @@
                         </div>
                         <div class="text-sm">
                             <p class="text-slate-400 text-xs">Need help?</p>
-                            <a href="tel:1-800-AETHER" class="font-semibold hover:text-brand-300">1-800-AETHER</a>
+                            <a href="tel:{{ $companyPhone }}" class="font-semibold hover:text-brand-300">{{ $companyPhone }}</a>
                         </div>
                     </div>
                     <a href="{{ route('track') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-accent-500 text-navy text-sm font-bold uppercase tracking-wider rounded-full hover:bg-accent-400 transition-colors">
@@ -81,13 +81,13 @@
                     Track shipment <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
                 </a>
                 <div class="pt-6 border-t border-white/10 space-y-3">
-                    <a href="mailto:support@aetheriancargo.com" class="flex items-center gap-3 text-slate-300 hover:text-white">
+                    <a href="mailto:{{ $companyEmail }}" class="flex items-center gap-3 text-slate-300 hover:text-white">
                         <i data-lucide="mail" class="w-5 h-5"></i>
-                        support@aetheriancargo.com
+                        {{ $companyEmail }}
                     </a>
-                    <a href="tel:1-800-AETHER" class="flex items-center gap-3 text-slate-300 hover:text-white">
+                    <a href="tel:{{ $companyPhone }}" class="flex items-center gap-3 text-slate-300 hover:text-white">
                         <i data-lucide="phone" class="w-5 h-5"></i>
-                        1-800-AETHER
+                        {{ $companyPhone }}
                     </a>
                 </div>
             </div>
@@ -118,7 +118,7 @@
             </div>
 
             <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-400">
-                <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All Rights Reserved.</p>
+                <p>&copy; {{ date('Y') }} {{ $companyName }}. All Rights Reserved.</p>
                 <div class="flex gap-6">
                     <a href="{{ route('terms') }}" class="hover:text-white transition-colors">Terms</a>
                     <a href="{{ route('privacy') }}" class="hover:text-white transition-colors">Privacy</a>

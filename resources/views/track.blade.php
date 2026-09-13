@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Track Shipment - Aetherian Cargo')
+@section('title', 'Track Shipment - ' . $companyName)
 
 @section('content')
     @php
@@ -46,18 +46,15 @@
                     @if ($shipment)
                         @php
                             $meta = $shipment->meta ?? [];
-                            $currency = $shipment->currency ?? 'USD';
-                            $symbol = ['USD' => '$', 'EUR' => '€', 'GBP' => '£'][$currency] ?? $currency.' ';
                             $origin = $shipment->origin ?: collect([$shipment->sender_city, $shipment->sender_country])->filter()->implode(', ') ?: 'N/A';
                             $destination = $shipment->destination ?: collect([$shipment->recipient_city, $shipment->recipient_country])->filter()->implode(', ') ?: 'N/A';
                             $packageType = $meta['package_type'] ?? '-';
                             $product = $meta['product'] ?? '-';
-                            $carrier = $shipment->carrier ?? 'Aetherian Cargo';
+                            $carrier = $shipment->carrier ?? $companyName;
                             $shipmentType = $meta['shipment_type'] ?? ($shipment->service ? ucwords(str_replace(['_', '-'], ' ', $shipment->service)) : '-');
                             $weight = $shipment->weight ? $shipment->weight . ' kg' : '-';
                             $paymentMode = $meta['payment_mode'] ?? '-';
                             $totalFreight = $meta['total_freight'] ?? '-';
-                            $totalCost = $shipment->payment_amount ? $symbol . number_format($shipment->payment_amount, 2) : '-';
                             $dimensions = collect([$meta['length_cm'] ?? null, $meta['width_cm'] ?? null, $meta['height_cm'] ?? null])->filter()->implode(' x ') ?: '-';
                         @endphp
 
@@ -69,8 +66,8 @@
                             </div>
 
                             <div class="flex flex-col items-center border-b border-slate-200 pb-6 mb-6">
-                                <img src="{{ asset('brand-logo.png') }}" alt="Aetherian Cargo" class="w-32 h-32 object-contain mb-4">
-                                <h2 class="text-2xl font-bold text-brand-600 text-center">Aetherian Cargo</h2>
+                                <img src="{{ asset('brand-logo.png') }}" alt="{{ $companyName }}" class="w-32 h-32 object-contain mb-4">
+                                <h2 class="text-2xl font-bold text-brand-600 text-center">{{ $companyName }}</h2>
                                 <p class="text-sm text-slate-500 tracking-wider text-center uppercase">International Freight</p>
                                 <svg id="barcode" class="mt-6 w-full max-w-xs"></svg>
                                 <p class="font-mono text-lg font-semibold text-slate-900 mt-1">{{ $shipment->tracking_number }}</p>
@@ -118,9 +115,7 @@
                                     <div><p class="font-bold text-slate-700">Product</p><p class="text-slate-600">{{ $product }}</p></div>
                                     <div><p class="font-bold text-slate-700">Qty</p><p class="text-slate-600">{{ $meta['quantity'] ?? '-' }}</p></div>
                                     <div><p class="font-bold text-slate-700">Payment Mode</p><p class="text-slate-600">{{ $paymentMode }}</p></div>
-                                    <div><p class="font-bold text-slate-700">Currency</p><p class="text-slate-600">{{ $currency }}</p></div>
                                     <div><p class="font-bold text-slate-700">Total Freight</p><p class="text-slate-600">{{ $totalFreight }}</p></div>
-                                    <div><p class="font-bold text-slate-700">Amount Due</p><p class="text-slate-600">{{ $totalCost }}</p></div>
                                     <div><p class="font-bold text-slate-700">Dimensions</p><p class="text-slate-600">{{ $dimensions }} cm</p></div>
                                     @if ($shipment->pickup_date)
                                         <div><p class="font-bold text-slate-700">Pick-up Date</p><p class="text-slate-600">{{ $shipment->pickup_date->format('M d, Y') }}</p></div>

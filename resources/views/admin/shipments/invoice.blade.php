@@ -83,7 +83,7 @@
                         <tr class="border-t border-slate-100">
                             <td class="px-4 py-3">{{ $meta['product'] ?? 'General cargo' }}</td>
                             <td class="px-4 py-3">{{ $meta['quantity'] ?? 1 }}</td>
-                            <td class="px-4 py-3">{{ $shipment->weight ?? '-' }} kg &bull; {{ collect([$meta['length_cm'], $meta['width_cm'], $meta['height_cm']])->filter()->implode(' x ') ?: '-' }} cm</td>
+                            <td class="px-4 py-3">{{ $shipment->weight ?? '-' }} kg &bull; {{ collect([$meta['length_cm'] ?? null, $meta['width_cm'] ?? null, $meta['height_cm'] ?? null])->filter()->implode(' x ') ?: '-' }} cm</td>
                             <td class="px-4 py-3 text-right">{{ $meta['package_type'] ?? 'N/A' }}</td>
                         </tr>
                     </tbody>
@@ -98,7 +98,7 @@
                     <span class="text-slate-600">Declared Value</span>
                     <span class="font-medium">{{ $symbol . number_format($shipment->declared_value ?? 0, 2) }}</span>
                 </div>
-                @if ($meta['total_freight'])
+                @if ($meta['total_freight'] ?? null)
                     <div class="flex justify-between py-2 border-b border-slate-100">
                         <span class="text-slate-600">Total Freight</span>
                         <span class="font-medium">{{ $meta['total_freight'] }}</span>

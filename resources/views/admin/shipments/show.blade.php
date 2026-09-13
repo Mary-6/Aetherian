@@ -46,11 +46,11 @@
             <p><strong>Status:</strong> {{ $shipment->status ? ucwords(str_replace(['_', '-'], ' ', $shipment->status)) : 'N/A' }}</p>
             <p><strong>Package:</strong> {{ $meta['package_type'] ?? 'N/A' }} | <strong>Product:</strong> {{ $meta['product'] ?? 'N/A' }} | <strong>Qty:</strong> {{ $meta['quantity'] ?? '-' }}</p>
             <p><strong>Piece Type:</strong> {{ $meta['piece_type'] ?? 'N/A' }} | <strong>Weight:</strong> {{ $shipment->weight ?? 'N/A' }} kg</p>
-            <p><strong>Dimensions:</strong> {{ collect([$meta['length_cm'], $meta['width_cm'], $meta['height_cm']])->filter()->implode(' x ') ?: 'N/A' }} cm</p>
+            <p><strong>Dimensions:</strong> {{ collect([$meta['length_cm'] ?? null, $meta['width_cm'] ?? null, $meta['height_cm'] ?? null])->filter()->implode(' x ') ?: 'N/A' }} cm</p>
             <p><strong>Carrier Reference No.:</strong> {{ $meta['carrier_reference'] ?? 'N/A' }}</p>
             <p><strong>Payment Mode:</strong> {{ $meta['payment_mode'] ?? 'N/A' }}</p>
             <p><strong>Total Freight:</strong> {{ $meta['total_freight'] ?? 'N/A' }}</p>
-            <p><strong>Declared Value:</strong> {{ $shipment->declared_value ?? 'N/A' }} | <strong>Amount Due:</strong> {{ $shipment->payment_amount ?? 'N/A' }} <strong>{{ $shipment->currency ?? 'USD' }}</strong></p>
+            <p><strong>Declared Value:</strong> {{ $shipment->declared_value ?? 'N/A' }}</p>
             <p><strong>Pick-up Date:</strong> {{ $shipment->pickup_date?->format('M d, Y') ?? 'N/A' }} | <strong>Pick-up Time:</strong> {{ $meta['pickup_time'] ?? 'N/A' }}</p>
             <p><strong>Departure Time:</strong> {{ $shipment->departure_time?->format('M d, Y H:i') ?? 'N/A' }}</p>
             <p><strong>Expected Delivery:</strong> {{ $shipment->estimated_delivery_at?->format('M d, Y') ?? 'N/A' }}</p>

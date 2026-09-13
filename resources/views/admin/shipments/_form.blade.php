@@ -1,10 +1,6 @@
 @php
 $meta = old('meta', $shipment->meta ?? []);
-$countryOptions = [
-    'United States', 'United Kingdom', 'Canada', 'Australia', 'Germany',
-    'France', 'Netherlands', 'China', 'Japan', 'India', 'Brazil', 'Mexico',
-    'South Africa', 'Nigeria', 'United Arab Emirates',
-];
+$countryOptions = config('countries.list', []);
 $shipmentModes = [
     'AIR_FREIGHT' => 'Air Freight',
     'SEA_FREIGHT' => 'Sea Freight',
@@ -13,7 +9,6 @@ $shipmentModes = [
     'OVERNIGHT' => 'Overnight',
 ];
 $paymentModes = ['Cash', 'Card', 'Bank transfer', 'PayPal', 'Cash App', 'Zelle', 'Apple Gift Card', 'Gift Card'];
-$currencyOptions = ['USD' => 'USD ($)', 'EUR' => 'EUR (€)', 'GBP' => 'GBP (£)'];
 $statusOptions = ['PENDING' => 'Pending', 'ON_HOLD' => 'On Hold', 'IN_TRANSIT' => 'In Transit', 'DELIVERED' => 'Delivered'];
 @endphp
 
@@ -79,7 +74,7 @@ $statusOptions = ['PENDING' => 'Pending', 'ON_HOLD' => 'On Hold', 'IN_TRANSIT' =
         <div class="mb-3"><label class="block text-sm font-medium">Package</label><input type="text" name="meta[package_type]" value="{{ $meta['package_type'] ?? '' }}" placeholder="e.g. Pet" class="w-full border rounded px-3 py-2"></div>
         <div class="mb-3"><label class="block text-sm font-medium">Product</label><input type="text" name="meta[product]" value="{{ $meta['product'] ?? '' }}" class="w-full border rounded px-3 py-2"></div>
         <div class="mb-3"><label class="block text-sm font-medium">Quantity</label><input type="number" min="1" name="meta[quantity]" value="{{ $meta['quantity'] ?? '' }}" class="w-full border rounded px-3 py-2"></div>
-        <div class="mb-3"><label class="block text-sm font-medium">Carrier Reference No.</label><input type="text" name="meta[carrier_reference]" value="{{ $meta['carrier_reference'] ?? '' }}" class="w-full border rounded px-3 py-2"></div>
+        <div class="mb-3"><label class="block text-sm font-medium">Carrier Reference No.</label><input type="text" name="meta[carrier_reference]" value="{{ $meta['carrier_reference'] ?? '' }}" readonly class="w-full border rounded px-3 py-2 bg-slate-100"></div>
         <div class="mb-3"><label class="block text-sm font-medium">Payment Mode</label>
             <select name="meta[payment_mode]" class="w-full border rounded px-3 py-2">
                 @foreach ($paymentModes as $m)
@@ -88,14 +83,6 @@ $statusOptions = ['PENDING' => 'Pending', 'ON_HOLD' => 'On Hold', 'IN_TRANSIT' =
             </select>
         </div>
         <div class="mb-3"><label class="block text-sm font-medium">Total Freight</label><input type="text" name="meta[total_freight]" value="{{ $meta['total_freight'] ?? '' }}" placeholder="e.g. 5hrs drive" class="w-full border rounded px-3 py-2"></div>
-        <div class="mb-3"><label class="block text-sm font-medium">Amount Due</label><input type="number" step="0.01" name="payment_amount" value="{{ old('payment_amount', $shipment->payment_amount ?? '') }}" class="w-full border rounded px-3 py-2"></div>
-        <div class="mb-3"><label class="block text-sm font-medium">Currency</label>
-            <select name="currency" class="w-full border rounded px-3 py-2">
-                @foreach ($currencyOptions as $value => $label)
-                    <option value="{{ $value }}" @selected(old('currency', $shipment->currency ?? 'USD') === $value)>{{ $label }}</option>
-                @endforeach
-            </select>
-        </div>
         <div class="mb-3"><label class="block text-sm font-medium">Expected Delivery Date</label><input type="date" name="estimated_delivery_at" value="{{ old('estimated_delivery_at', isset($shipment) && $shipment->estimated_delivery_at ? $shipment->estimated_delivery_at->format('Y-m-d') : '') }}" class="w-full border rounded px-3 py-2"></div>
         <div class="mb-3"><label class="block text-sm font-medium">Departure Time</label><input type="datetime-local" name="departure_time" value="{{ old('departure_time', isset($shipment) && $shipment->departure_time ? $shipment->departure_time->format('Y-m-d\\TH:i') : '') }}" class="w-full border rounded px-3 py-2"></div>
         <div class="mb-3"><label class="block text-sm font-medium">Pick-up Time</label><input type="time" name="meta[pickup_time]" value="{{ $meta['pickup_time'] ?? '' }}" class="w-full border rounded px-3 py-2"></div>

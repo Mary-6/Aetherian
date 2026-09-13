@@ -9,17 +9,23 @@ use Illuminate\Http\Request;
 class SettingController extends Controller
 {
     protected $settingKeys = [
-        'site_name',
-        'site_email',
-        'site_phone',
-        'site_address',
-        'currency',
+        'company_name',
+        'company_email',
+        'company_phone',
+        'company_address',
+    ];
+
+    protected $defaults = [
+        'company_name' => 'Aetherian Cargo',
+        'company_email' => 'Aetheriancargo@gmail.com',
+        'company_phone' => '+1 (423) 277-8587',
+        'company_address' => 'Aetherian Cargo HQ',
     ];
 
     public function index()
     {
         $settings = collect($this->settingKeys)->mapWithKeys(function ($key) {
-            return [$key => Setting::get($key, '')];
+            return [$key => Setting::get($key, $this->defaults[$key] ?? '')];
         });
 
         return view('admin.settings.index', compact('settings'));
