@@ -79,9 +79,9 @@
                     </form>
 
                     <div class="mt-8 space-y-3 text-sm text-white/80">
-                        <p class="flex items-center gap-3"><i data-lucide="phone" class="w-4 h-4"></i> 1-800-AETHER</p>
-                        <p class="flex items-center gap-3"><i data-lucide="mail" class="w-4 h-4"></i> support@aetheriancargo.com</p>
-                        <p class="flex items-center gap-3"><i data-lucide="map-pin" class="w-4 h-4"></i> Global logistics network</p>
+                        <p class="flex items-center gap-3"><i data-lucide="phone" class="w-4 h-4"></i> {{ $companyPhone }}</p>
+                        <p class="flex items-center gap-3"><i data-lucide="mail" class="w-4 h-4"></i> {{ $companyEmail }}</p>
+                        <p class="flex items-center gap-3"><i data-lucide="map-pin" class="w-4 h-4"></i> {{ $companyAddress }}</p>
                     </div>
                 </div>
             </div>

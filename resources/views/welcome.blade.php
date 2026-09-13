@@ -43,7 +43,7 @@
                     </div>
                     <div>
                         <p class="text-sm text-slate-300">Need help?</p>
-                        <a href="tel:1-800-AETHER" class="text-xl font-bold hover:text-brand-300">1-800-AETHER</a>
+                        <a href="tel:{{ $companyPhone }}" class="text-xl font-bold hover:text-brand-300">{{ $companyPhone }}</a>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,7 @@
                             </div>
                             <div>
                                 <p class="text-sm text-white/80">Need help?</p>
-                                <a href="tel:1-800-AETHER" class="text-xl font-bold">1-800-AETHER</a>
+                                <a href="tel:{{ $companyPhone }}" class="text-xl font-bold">{{ $companyPhone }}</a>
                             </div>
                         </div>
                     </div>
