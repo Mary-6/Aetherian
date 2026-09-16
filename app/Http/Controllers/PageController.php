@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\ContactMessage;
 use App\Models\SupportTicket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Mail\ContactMessageReceived;
 
 class PageController extends Controller
 {
@@ -39,7 +41,13 @@ class PageController extends Controller
             'message' => 'required|string',
         ]);
 
-        ContactMessage::create($data);
+        $contact = ContactMessage::create($data);
+
+        try {
+            Mail::send(new ContactMessageReceived($contact));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return back()->with('success', 'Thank you for contacting us. We will reply shortly.');
     }
