@@ -60,7 +60,7 @@ class InvoiceController extends Controller
         $company = [
             'name' => Setting::get('company_name', config('app.name')),
             'logo' => asset('brand-logo.png'),
-            'email' => Setting::get('company_email', config('mail.from.address', 'support@aetheriancargo.com')),
+            'email' => Setting::get('company_email', config('mail.from.address', 'aetheriancargo@gmail.com')),
             'phone' => Setting::get('company_phone', '+1 (423) 277-8587'),
             'address' => Setting::get('company_address', 'Aetherian Cargo HQ'),
         ];
