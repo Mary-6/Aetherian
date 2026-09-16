@@ -11,7 +11,7 @@ class SettingSeeder extends Seeder
     {
         $defaults = [
             'company_name' => 'Aetherian Cargo',
-            'company_email' => 'Aetheriancargo@gmail.com',
+            'company_email' => 'atheriancargo@gmail.com',
             'company_phone' => '+1 (423) 277-8587',
             'company_address' => 'Aetherian Cargo HQ',
         ];

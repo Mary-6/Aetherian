@@ -44,12 +44,12 @@ class AppServiceProvider extends ServiceProvider
     {
         try {
             $name = Setting::get('company_name', config('app.name'));
-            $email = Setting::get('company_email', 'Aetheriancargo@gmail.com');
+            $email = Setting::get('company_email', 'atheriancargo@gmail.com');
             $phone = Setting::get('company_phone', '+1 (423) 277-8587');
             $address = Setting::get('company_address', 'Aetherian Cargo HQ');
         } catch (\Throwable $e) {
             $name = config('app.name');
-            $email = 'Aetheriancargo@gmail.com';
+            $email = 'atheriancargo@gmail.com';
             $phone = '+1 (423) 277-8587';
             $address = 'Aetherian Cargo HQ';
         }
