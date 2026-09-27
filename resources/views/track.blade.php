@@ -121,10 +121,10 @@
                                         <div><p class="font-bold text-slate-700">Pick-up Date</p><p class="text-slate-600">{{ $shipment->pickup_date->format('M d, Y') }}</p></div>
                                     @endif
                                     @if (!empty($meta['pickup_time']))
-                                        <div><p class="font-bold text-slate-700">Pick-up Time</p><p class="text-slate-600">{{ $meta['pickup_time'] }}</p></div>
+                                        <div><p class="font-bold text-slate-700">Estimated Arrival Time</p><p class="text-slate-600">{{ $meta['pickup_time'] }}</p></div>
                                     @endif
                                     @if ($shipment->departure_time)
-                                        <div><p class="font-bold text-slate-700">Arrival Time</p><p class="text-slate-600">{{ $shipment->departure_time->format('M d, Y H:i') }}</p></div>
+                                        <div><p class="font-bold text-slate-700">Departure Time</p><p class="text-slate-600">{{ $shipment->departure_time->format('M d, Y H:i') }}</p></div>
                                     @endif
                                     @if ($shipment->estimated_delivery_at)
                                         <div><p class="font-bold text-slate-700">Expected Delivery Date</p><p class="text-slate-600">{{ $shipment->estimated_delivery_at->format('M d, Y') }}</p></div>

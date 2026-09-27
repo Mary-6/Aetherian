@@ -39,8 +39,8 @@
         'Declared Value' => $shipment->declared_value,
         'Payment Mode' => $meta['payment_mode'] ?? null,
         'Pick-up Date' => $shipment->pickup_date?->format('M d, Y'),
-        'Pick-up Time' => $meta['pickup_time'] ?? null,
-        'Arrival Time' => $shipment->departure_time?->format('M d, Y H:i'),
+        'Estimated Arrival Time' => $meta['pickup_time'] ?? null,
+        'Departure Time' => $shipment->departure_time?->format('M d, Y H:i'),
         'Expected Delivery Date' => $shipment->estimated_delivery_at?->format('M d, Y'),
         'Comments' => $meta['comments'] ?? null,
     ];
