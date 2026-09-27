@@ -52,7 +52,7 @@
             <p><strong>Total Freight:</strong> {{ $meta['total_freight'] ?? 'N/A' }}</p>
             <p><strong>Declared Value:</strong> {{ $shipment->declared_value ?? 'N/A' }}</p>
             <p><strong>Pick-up Date:</strong> {{ $shipment->pickup_date?->format('M d, Y') ?? 'N/A' }} | <strong>Pick-up Time:</strong> {{ $meta['pickup_time'] ?? 'N/A' }}</p>
-            <p><strong>Departure Time:</strong> {{ $shipment->departure_time?->format('M d, Y H:i') ?? 'N/A' }}</p>
+            <p><strong>Arrival Time:</strong> {{ $shipment->departure_time?->format('M d, Y H:i') ?? 'N/A' }}</p>
             <p><strong>Expected Delivery:</strong> {{ $shipment->estimated_delivery_at?->format('M d, Y') ?? 'N/A' }}</p>
             <p><strong>Comments:</strong> {{ $meta['comments'] ?? 'N/A' }}</p>
         </div>

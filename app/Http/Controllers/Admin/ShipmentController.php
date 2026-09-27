@@ -8,7 +8,9 @@ use App\Models\Driver;
 use App\Models\Setting;
 use App\Models\Shipment;
 use App\Models\ShipmentEvent;
+use App\Mail\ShipmentCreated;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class ShipmentController extends Controller
@@ -32,35 +34,37 @@ class ShipmentController extends Controller
     {
         $data = $request->validate([
             'sender_name' => 'required|string|max:255',
-            'sender_email' => 'required|email|max:255',
-            'sender_phone' => 'required|string|max:50',
-            'sender_address' => 'required|string',
-            'sender_city' => 'required|string|max:100',
-            'sender_country' => 'required|string|max:100',
+            'sender_email' => 'nullable|email|max:255',
+            'sender_phone' => 'nullable|string|max:50',
+            'sender_address' => 'nullable|string',
+            'sender_city' => 'nullable|string|max:100',
+            'sender_country' => 'nullable|string|max:100',
             'recipient_name' => 'required|string|max:255',
-            'recipient_email' => 'required|email|max:255',
-            'recipient_phone' => 'required|string|max:50',
-            'recipient_address' => 'required|string',
-            'recipient_city' => 'required|string|max:100',
-            'recipient_country' => 'required|string|max:100',
+            'recipient_email' => 'nullable|email|max:255',
+            'recipient_phone' => 'nullable|string|max:50',
+            'recipient_address' => 'nullable|string',
+            'recipient_city' => 'nullable|string|max:100',
+            'recipient_country' => 'nullable|string|max:100',
             'origin' => 'nullable|string|max:100',
-            'destination' => 'required|string|max:100',
+            'destination' => 'nullable|string|max:100',
             'carrier' => 'nullable|string|max:100',
-            'weight' => 'required|numeric',
-            'service' => 'required|string|in:AIR_FREIGHT,SEA_FREIGHT,ROAD_FREIGHT,EXPRESS,OVERNIGHT',
-            'declared_value' => 'required|numeric',
+            'weight' => 'nullable|numeric',
+            'service' => 'nullable|string|in:AIR_FREIGHT,SEA_FREIGHT,ROAD_FREIGHT,EXPRESS,OVERNIGHT',
+            'declared_value' => 'nullable|numeric',
             'pickup_date' => 'nullable|date',
             'departure_time' => 'nullable|date',
             'estimated_delivery_at' => 'nullable|date',
-            'status' => 'required|string|in:PENDING,ON_HOLD,IN_TRANSIT,DELIVERED',
+            'status' => 'nullable|string|in:PENDING,ON_HOLD,IN_TRANSIT,DELIVERED',
             'meta' => 'nullable|array',
         ]);
 
         $data['tracking_number'] = $this->generateTrackingNumber();
         $data['created_by'] = auth()->id();
-        $data['carrier'] = $data['carrier'] ?: config('app.name');
+        $data['carrier'] = ($data['carrier'] ?? null) ?: config('app.name');
+        $data['service'] = ($data['service'] ?? null) ?: 'AIR_FREIGHT';
+        $data['status'] = ($data['status'] ?? null) ?: 'PENDING';
         $data['meta'] = $request->input('meta', []);
-        $data['meta']['carrier_reference'] = $data['meta']['carrier_reference'] ?: $this->generateCarrierReference();
+        $data['meta']['carrier_reference'] = ($data['meta']['carrier_reference'] ?? null) ?: $this->generateCarrierReference();
 
         $shipment = Shipment::create($data);
 
@@ -70,6 +74,8 @@ class ShipmentController extends Controller
             'description' => 'Shipment created.',
             'occurred_at' => now(),
         ]);
+
+        $this->sendShipmentCreatedEmail($shipment);
 
         return redirect()->route('admin.shipments.index')->with('success', 'Shipment created.');
     }
@@ -90,31 +96,33 @@ class ShipmentController extends Controller
     {
         $data = $request->validate([
             'sender_name' => 'required|string|max:255',
-            'sender_email' => 'required|email|max:255',
-            'sender_phone' => 'required|string|max:50',
-            'sender_address' => 'required|string',
-            'sender_city' => 'required|string|max:100',
-            'sender_country' => 'required|string|max:100',
+            'sender_email' => 'nullable|email|max:255',
+            'sender_phone' => 'nullable|string|max:50',
+            'sender_address' => 'nullable|string',
+            'sender_city' => 'nullable|string|max:100',
+            'sender_country' => 'nullable|string|max:100',
             'recipient_name' => 'required|string|max:255',
-            'recipient_email' => 'required|email|max:255',
-            'recipient_phone' => 'required|string|max:50',
-            'recipient_address' => 'required|string',
-            'recipient_city' => 'required|string|max:100',
-            'recipient_country' => 'required|string|max:100',
+            'recipient_email' => 'nullable|email|max:255',
+            'recipient_phone' => 'nullable|string|max:50',
+            'recipient_address' => 'nullable|string',
+            'recipient_city' => 'nullable|string|max:100',
+            'recipient_country' => 'nullable|string|max:100',
             'origin' => 'nullable|string|max:100',
-            'destination' => 'required|string|max:100',
+            'destination' => 'nullable|string|max:100',
             'carrier' => 'nullable|string|max:100',
-            'weight' => 'required|numeric',
-            'service' => 'required|string|in:AIR_FREIGHT,SEA_FREIGHT,ROAD_FREIGHT,EXPRESS,OVERNIGHT',
-            'declared_value' => 'required|numeric',
+            'weight' => 'nullable|numeric',
+            'service' => 'nullable|string|in:AIR_FREIGHT,SEA_FREIGHT,ROAD_FREIGHT,EXPRESS,OVERNIGHT',
+            'declared_value' => 'nullable|numeric',
             'pickup_date' => 'nullable|date',
             'departure_time' => 'nullable|date',
             'estimated_delivery_at' => 'nullable|date',
-            'status' => 'required|string|in:PENDING,ON_HOLD,IN_TRANSIT,DELIVERED',
+            'status' => 'nullable|string|in:PENDING,ON_HOLD,IN_TRANSIT,DELIVERED',
             'meta' => 'nullable|array',
         ]);
 
-        $data['carrier'] = $data['carrier'] ?: config('app.name');
+        $data['carrier'] = ($data['carrier'] ?? null) ?: config('app.name');
+        $data['service'] = ($data['service'] ?? null) ?: $shipment->service;
+        $data['status'] = ($data['status'] ?? null) ?: $shipment->status;
         $data['meta'] = $request->input('meta', []);
         if (! $data['meta'] && $shipment->meta) {
             $data['meta'] = $shipment->meta;
@@ -158,6 +166,22 @@ class ShipmentController extends Controller
         $shipment->delete();
 
         return back()->with('success', 'Shipment deleted.');
+    }
+
+    private function sendShipmentCreatedEmail(Shipment $shipment): void
+    {
+        $recipients = collect([$shipment->sender_email, $shipment->recipient_email])
+            ->filter()
+            ->map(fn ($e) => strtolower(trim($e)))
+            ->unique();
+
+        foreach ($recipients as $email) {
+            try {
+                Mail::to($email)->send(new ShipmentCreated($shipment));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
     }
 
     private function generateTrackingNumber(): string
