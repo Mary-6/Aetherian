@@ -51,7 +51,7 @@
         <p style="margin:6px 0 0;font-size:13px;">Your shipment has been created</p>
     </div>
     <div class="body">
-        <p>Hi {{ filled($recipientName) ? $recipientName : 'there' }},</p>
+        <p>Hi,</p>
         <p>Your shipment has been created with {{ $companyName }}. Use the tracking number below to follow its progress at any time.</p>
 
         <div class="tracking">
