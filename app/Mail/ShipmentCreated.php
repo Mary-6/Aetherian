@@ -17,9 +17,12 @@ class ShipmentCreated extends Mailable
 
     public Shipment $shipment;
 
-    public function __construct(Shipment $shipment)
+    public ?string $recipientName;
+
+    public function __construct(Shipment $shipment, ?string $recipientName = null)
     {
         $this->shipment = $shipment;
+        $this->recipientName = $recipientName;
     }
 
     public function envelope(): Envelope
@@ -35,6 +38,7 @@ class ShipmentCreated extends Mailable
         return new Content(
             view: 'emails.shipments.created',
             with: [
+                'recipientName' => $this->recipientName,
                 'companyName' => Setting::get('company_name', config('app.name')),
                 'companyEmail' => Setting::get('company_email', config('mail.from.address')),
                 'companyPhone' => Setting::get('company_phone', '+1 (423) 277-8587'),

@@ -170,14 +170,17 @@ class ShipmentController extends Controller
 
     private function sendShipmentCreatedEmail(Shipment $shipment): void
     {
-        $recipients = collect([$shipment->sender_email, $shipment->recipient_email])
-            ->filter()
-            ->map(fn ($e) => strtolower(trim($e)))
-            ->unique();
+        $recipients = collect([
+            [$shipment->sender_email, $shipment->sender_name],
+            [$shipment->recipient_email, $shipment->recipient_name],
+        ])
+            ->filter(fn ($r) => filled($r[0]))
+            ->map(fn ($r) => [strtolower(trim($r[0])), $r[1]])
+            ->unique(fn ($r) => $r[0]);
 
-        foreach ($recipients as $email) {
+        foreach ($recipients as [$email, $name]) {
             try {
-                Mail::to($email)->send(new ShipmentCreated($shipment));
+                Mail::to($email)->send(new ShipmentCreated($shipment, $name));
             } catch (\Throwable $e) {
                 report($e);
             }
